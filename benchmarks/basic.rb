@@ -4,7 +4,9 @@
 require_relative 'setup'
 
 run("Loading ONE user object") do |x|
-  x.verify { |user| user.name == 'User 1' }
+  x.verify do |user|
+    user.name == 'User 1'
+  end
   x.report("AR") do
     ARUser.by_name('User 1').first
   end
@@ -14,7 +16,9 @@ run("Loading ONE user object") do |x|
 end
 
 run("Loading ALL user objects") do |x|
-  x.verify { |users| users.size == COUNT }
+  x.verify do |users|
+    users.size == COUNT
+  end
   x.report("AR") do
     ARUser.all.to_a
   end
@@ -24,7 +28,9 @@ run("Loading ALL user objects") do |x|
 end
 
 run("Loading ALL users with their tasks") do |x|
-  x.verify { |users| users.size == COUNT }
+  x.verify do |users|
+    users.size == COUNT
+  end
   x.report("AR") do
     ARUser.all.includes(:tasks).to_a
   end
@@ -34,23 +40,27 @@ run("Loading ALL users with their tasks") do |x|
 end
 
 run("Loading ONE task with its user and tags") do |x|
-  x.verify { |task| task.title == 'Task 1' }
+  x.verify do |task|
+    task.title == 'Task 1'
+  end
   x.report("AR") do
     ARTask.all
-    .includes(:user)
-    .includes(:tags)
-    .where(users: { name: 'User 1' }, tasks: { title: 'Task 1' })
-    .first
+      .includes(:user)
+      .includes(:tags)
+      .where(users: { name: 'User 1' }, tasks: { title: 'Task 1' })
+      .first
   end
   x.report("ROM") do
     tasks_with_user_and_tags
-    .where(users__name: 'User 1', tasks__title: 'Task 1')
-    .one
+      .where(users__name: 'User 1', tasks__title: 'Task 1')
+      .one
   end
 end
 
 run("Loading ALL tasks with their users") do |x|
-  x.verify { |tasks| tasks.size == COUNT * 3 }
+  x.verify do |tasks|
+    tasks.size == COUNT * 3
+  end
   x.report("AR") do
     ARTask.all.includes(:user).to_a
   end
@@ -60,7 +70,9 @@ run("Loading ALL tasks with their users") do |x|
 end
 
 run("Loading ALL tasks with their users and tags") do |x|
-  x.verify { |tasks| tasks.size == COUNT * 3 }
+  x.verify do |tasks|
+    tasks.size == COUNT * 3
+  end
   x.report("AR") do
     ARTask.all.includes(:user).includes(:tags).to_a
   end
@@ -70,7 +82,10 @@ run("Loading ALL tasks with their users and tags") do |x|
 end
 
 run("to_json on ALL user objects") do |x|
-  x.verify { |json| JSON(json).size == COUNT }
+  x.verify do |json|
+    users = JSON(json)
+    users.size == COUNT
+  end
   x.report("AR") do
     ARUser.all.to_a.to_json
   end
